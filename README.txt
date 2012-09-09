@@ -11,3 +11,5 @@ in the browser either must impement their own parser or rely on unspecified
 behaviour.
 
 Perhaps instead they will use this module :) it weighs in at a little over 1k.
+
+The contents of this repo are provided under the MIT-Style License in LICENSE
