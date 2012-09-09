@@ -10,4 +10,4 @@ I wrote this module because there's nothing (that I can see) in the EcmaScript
 in the browser either must impement their own parser or rely on unspecified 
 behaviour.
 
-Perhaps instead they will use this module :) it weighs in at a little of 1k.
+Perhaps instead they will use this module :) it weighs in at a little over 1k.
