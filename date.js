@@ -138,7 +138,7 @@ window['parseRfc822Date'] = (function (){
             // The Suffixes 'A', 'M', 'N', and 'Y' were specified
             // incorrectly in RFC 822 and deprecated in RFC 1123
             assert(indexOf('AMNY'.split(''), match[ZONE_CODE]) === -1,
-                   'Military suffixes are deprecated: ' + str);
+                   'Military suffixes are deprecated in RFC 1123: ' + str);
 
             offset = zones[match[ZONE_CODE]] * AN_HOUR;
         } else {
@@ -146,7 +146,7 @@ window['parseRfc822Date'] = (function (){
             var offsetSign = match[OFFSET_SIGN] === '-' ? -1 : +1;
             var offsetHours = Number(match[OFFSET_HOURS]);
             var offsetMinutes = Number(match[OFFSET_MINUTES]);
-
+            assert(0 <= offsetMinutes && offsetMinutes <= 59);
             offset = offsetSign * ((offsetHours * AN_HOUR) + (offsetMinutes * A_MINUTE));
         }
 
