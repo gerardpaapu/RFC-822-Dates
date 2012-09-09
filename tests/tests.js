@@ -29,7 +29,7 @@ test('Produce the same dates as builtin Date constructor', function () {
     });
 });
 
-test('Invalid dates throw an Error', function () {
+test('Invalid dates throw an Error in strict mode', function () {
     [
         // Some other format
         '2002-10-02T08:00:00-05:00',
@@ -56,6 +56,7 @@ test('Invalid dates throw an Error', function () {
         'Wed, 02 Oct 2002 13:00:00 N',
         'Wed, 02 Oct 2002 13:00:00 Y'
     ].forEach(function (dateString) {
-        throws(function () { parseRfc822Date(dateString); });
+        throws(function () { parseRfc822Date(dateString, true); },
+               '"' + dateString + '" is a bad date time string');
     });
 });

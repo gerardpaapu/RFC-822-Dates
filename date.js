@@ -151,11 +151,15 @@ window['parseRfc822Date'] = (function (){
         }
 
         // Assert that we are returning a valid date
-        var result = new Date(gmt - offset);
-        assert(!isNaN(+result));
-
-        return result;
+        return new Date(gmt - offset);
     }
 
-    return parse;
+    return function (dateTimeString, strict) {
+        if (strict) return parse(dateTimeString);
+        try {
+            return parse(dateTimeString);
+        } catch (e) {
+            return new Date(NaN);
+        } 
+    };
 }());

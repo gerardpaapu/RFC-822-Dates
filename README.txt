@@ -14,3 +14,12 @@ unspecified behaviour.
 Perhaps instead they will use this module :) it weighs in at a little over 1k.
 
 The contents of this repo are provided under the MIT-Style License in LICENSE
+
+This provides a single function.
+
+`Date parseRfc822Date(String dateTimeString, Boolean strict)`
+
+If strict is true, then invalid date time strings will throw an error, if
+strict is false invalid date time strings will return an invalid date. 
+
+`strict` is false if omitted.
