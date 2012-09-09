@@ -19,7 +19,7 @@ This provides a single function.
 
 `Date parseRfc822Date(String dateTimeString, Boolean strict)`
 
-If strict is true, then invalid date time strings will throw an error, if
-strict is false invalid date time strings will return an invalid date. 
+If `strict` is true, then an invalid `dateTimeString` will throw an error, if
+`strict` is false an invalid `dateTimeString` will return an invalid date. 
 
 `strict` is false if omitted.
