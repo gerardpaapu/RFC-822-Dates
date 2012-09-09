@@ -3,13 +3,17 @@ window['parseRfc822Date'] = (function (){
     // Parse the date format as specified here:
     //
     // http://asg.web.cmu.edu/rfc/rfc822.html#sec-5.1
+    //
+    // And updated here:
+    //
+    // http://asg.web.cmu.edu/rfc/rfc1123.html#sec-5.2.14
     //	
     // date-time   =  [ day "," ] date time        ; dd mm yy
     //                                             ;  hh:mm:ss zzz
     // 
     // day         =  "Mon"  / "Tue" /  "Wed"  / "Thu"
     //             /  "Fri"  / "Sat" /  "Sun"
-    // date        =  1*2DIGIT month 2DIGIT        ; day month year
+    // date        =  1*2DIGIT month 2*4DIGIT      ; day month year
     //                                             ;  e.g. 20 Jun 82
     // 
     // month       =  "Jan"  /  "Feb" /  "Mar"  /  "Apr"
@@ -37,7 +41,7 @@ window['parseRfc822Date'] = (function (){
     var day = '(?:(Mon|Tue|Wed|Thu|Fri|Sat|Sun), )?';
     var DAY_OF_WEEK = 1;
 
-    var month = '(\\d{1,2}) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (\\d{4})';
+    var month = '(\\d{1,2}) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) ((?:\\d{2})|(?:\\d{4}))';
     var DAY_OF_MONTH = 2;
     var MONTH = 3;
     var YEAR = 4;
@@ -57,7 +61,7 @@ window['parseRfc822Date'] = (function (){
     var A_MINUTE = 60000;
     var AN_HOUR  = 60 * A_MINUTE;
 
-    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var months   = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     var weekdays = ['Sun', 'Mon', 'Tues', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     var zones = {
@@ -66,7 +70,7 @@ window['parseRfc822Date'] = (function (){
         CST: -6, CDT: -5,
         MST: -7, MDT: -6,
         PST: -8, PDT: -7,
-        Z: 0, M: -12, N: +1, Y: +12
+        Z: 0
     };
 
     var pattern = new RegExp("^" + day + month + hour + zone + "$");
@@ -84,9 +88,9 @@ window['parseRfc822Date'] = (function (){
     }
 
     function parse(str) {
-        function assert(fact) {
+        function assert(fact, message) {
             if (!fact) { 
-                throw new Error('Invalid RFC-822 Date: "' + str + '"');
+                throw new Error(message || 'Invalid RFC-822 Date: "' + str + '"');
             }
         }
 
@@ -105,7 +109,7 @@ window['parseRfc822Date'] = (function (){
         var hours = Number(match[HOUR]);
         var minutes = Number(match[MINUTE]);
         var seconds = Number(match[SECOND]);
-        // I don't think these are necessary either
+        // I'm not sure these are necessary either
         // for the same reason.
         assert(hours >= 0 && hours <= 24);
         assert(minutes >= 0 && minutes <= 59);
@@ -130,6 +134,12 @@ window['parseRfc822Date'] = (function (){
         var offset;
         if (match[ZONE_CODE]) {
             // The date was supplied as a letter code e.g. EST, GMT
+
+            // The Suffixes 'A', 'M', 'N', and 'Y' were specified
+            // incorrectly in RFC 822 and deprecated in RFC 1123
+            assert(indexOf('AMNY'.split(''), match[ZONE_CODE]) === -1,
+                   'Military suffixes are deprecated: ' + str);
+
             offset = zones[match[ZONE_CODE]] * AN_HOUR;
         } else {
             // The date was supplied as hours and minutes e.g. +1200
