@@ -9,8 +9,17 @@ function datesEqual(a, b) {
                   a >= b && a <= b);
 }
 
+var forEach = Array.prototype.forEach || function (fn, ctx) {
+    var i = 0,
+        max = this.length,
+        result = new Array(max);
+
+    for (; i < max; i++) result[i] = fn.call(ctx, this[i], i, this);
+    return result;
+};
+
 test('Produce the same dates as builtin Date constructor', function () {
-    [
+    forEach.call([
         'Wed, 02 Oct 2002 13:00:00 UT',
         'Wed, 02 Oct 2002 13:00:00 GMT',
         'Wed, 02 Oct 2002 13:00:00 EST',
@@ -23,14 +32,14 @@ test('Produce the same dates as builtin Date constructor', function () {
         'Wed, 02 Oct 2002 13:00:00 PDT',
         'Wed, 02 Oct 2002 13:00:00 Z',
         'Wed, 02 Oct 2002 15:00:00 +0200'
-    ].forEach(function (dateString) {
+    ], function (dateString) {
         datesEqual(parseRfc822Date(dateString),
                    new Date(dateString));
     });
 });
 
 test('Invalid dates throw an Error in strict mode', function () {
-    [
+    forEach.call([
         // Some other format
         '2002-10-02T08:00:00-05:00',
 
@@ -55,7 +64,7 @@ test('Invalid dates throw an Error in strict mode', function () {
         'Wed, 02 Oct 2002 13:00:00 M',
         'Wed, 02 Oct 2002 13:00:00 N',
         'Wed, 02 Oct 2002 13:00:00 Y'
-    ].forEach(function (dateString) {
+    ], function (dateString) {
         throws(function () { parseRfc822Date(dateString, true); },
                '"' + dateString + '" is a bad date time string');
     });
